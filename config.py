@@ -28,7 +28,7 @@ VIDEO_DURATION_LIMIT = int(getenv("VIDEO_DURATION_LIMIT", 60*20)) # 20 minutes
 #YT_API_KEY = "freekey15052025"
 
 API_URL = getenv("API_URL", 'https://api.thequickearn.xyz') #youtube song url
-API_KEY = getenv("API_KEY", '30DxNexGenBotsc0db7b') # 
+API_KEY = getenv("API_KEY", '30DxNexGenBots679197') # 
 
 # Chat id of a group for logging bot's activities
 
