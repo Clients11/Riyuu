@@ -5,6 +5,7 @@ from typing import Union
 
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Voice
 from pyrogram.errors import FloodWait
+from pyrogram.enums import ParseMode
 
 import config
 from AnonXMusic import app
@@ -162,6 +163,7 @@ class TeleAPI:
                     await mystic.edit_text(
                         text=progress_text,
                         reply_markup=upl,
+                        parse_mode=ParseMode.MARKDOWN
                     )
                     last_update_time[message.id] = current_time
                 except FloodWait as x:
@@ -193,8 +195,8 @@ class TeleAPI:
 
 🤖 **ʙᴏᴛ:** {app.mention}
 """
-                await mystic.edit_text(success_text)
-                
+                await mystic.edit_text(success_text, parse_mode=ParseMode.MARKDOWN)
+
                 # Clean up tracking data
                 if message.id in speed_counter:
                     del speed_counter[message.id]
@@ -210,7 +212,7 @@ class TeleAPI:
 
 🤖 **ʙᴏᴛ:** {app.mention}
 """
-                await mystic.edit_text(error_text)
+                await mystic.edit_text(error_text, parse_mode=ParseMode.MARKDOWN)
                 
                 # Clean up tracking data
                 if message.id in speed_counter:
