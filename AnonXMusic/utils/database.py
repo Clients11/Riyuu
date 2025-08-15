@@ -15,6 +15,7 @@ channeldb = mongodb.cplaymode
 countdb = mongodb.upcount
 gbansdb = mongodb.gban
 langdb = mongodb.language
+moviegroupsdb = mongodb.moviegroups
 onoffdb = mongodb.onoffper
 playmodedb = mongodb.playmode
 playtypedb = mongodb.playtypedb
@@ -644,3 +645,33 @@ async def remove_banned_user(user_id: int):
     if not is_gbanned:
         return
     return await blockeddb.delete_one({"user_id": user_id})
+
+
+# Movie Groups Functions
+async def get_movie_groups() -> list:
+    results = []
+    async for group in moviegroupsdb.find({"chat_id": {"$lt": 0}}):
+        chat_id = group["chat_id"]
+        results.append(chat_id)
+    return results
+
+
+async def is_movie_group(chat_id: int) -> bool:
+    group = await moviegroupsdb.find_one({"chat_id": chat_id})
+    if not group:
+        return False
+    return True
+
+
+async def add_movie_group(chat_id: int):
+    is_movie = await is_movie_group(chat_id)
+    if is_movie:
+        return
+    return await moviegroupsdb.insert_one({"chat_id": chat_id})
+
+
+async def remove_movie_group(chat_id: int):
+    is_movie = await is_movie_group(chat_id)
+    if not is_movie:
+        return
+    return await moviegroupsdb.delete_one({"chat_id": chat_id})

@@ -26,17 +26,34 @@ def get_readable_time(seconds: int) -> str:
     return ping_time
 
 
-def convert_bytes(size: float) -> str:
-    """humanize size"""
-    if not size:
-        return ""
-    power = 1024
-    t_n = 0
-    power_dict = {0: " ", 1: "Ki", 2: "Mi", 3: "Gi", 4: "Ti"}
-    while size > power:
-        size /= power
-        t_n += 1
-    return "{:.2f} {}B".format(size, power_dict[t_n])
+def convert_bytes(size_bytes: float) -> str:
+    """
+    Converts a size in bytes to a human-readable string with binary prefixes.
+
+    Args:
+        size_bytes: The size in bytes.
+
+    Returns:
+        A formatted string like "1.46 KiB" or "0.00 B".
+    """
+    if not isinstance(size_bytes, (int, float)):
+        raise TypeError("Input must be a number.")
+        
+    if size_bytes == 0:
+        return "0.00 B"
+
+    sign = "-" if size_bytes < 0 else ""
+    num = abs(size_bytes)
+    
+    units = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"]
+    power_index = 0
+    base = 1024
+
+    while num >= base and power_index < len(units) - 1:
+        num /= base
+        power_index += 1
+
+    return f"{sign}{num:.2f} {units[power_index]}"
 
 
 async def int_to_alpha(user_id: int) -> str:

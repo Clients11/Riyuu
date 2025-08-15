@@ -11,9 +11,10 @@ from AnonXMusic import Apple, Resso, SoundCloud, Spotify, Telegram, YouTube, app
 from AnonXMusic.core.call import Anony
 from AnonXMusic.utils import seconds_to_min, time_to_seconds
 from AnonXMusic.utils.channelplay import get_channeplayCB
+from AnonXMusic.utils.database import is_movie_group
 from AnonXMusic.utils.decorators.language import languageCB
 from AnonXMusic.utils.decorators.play import PlayWrapper
-from AnonXMusic.utils.formatters import formats
+from AnonXMusic.utils.formatters import convert_bytes, formats
 from AnonXMusic.utils.inline import (
     botplaylist_markup,
     livestream_markup,
@@ -37,7 +38,6 @@ from config import BANNED_USERS, lyrical
             "vplayforce",
             "cplayforce",
             "cvplayforce",
-            "sparrow"
         ]
     )
     & filters.group
@@ -106,7 +106,6 @@ async def play_commnd(
                     forceplay=fplay,
                 )
             except Exception as e:
-                print(e)
                 ex_type = type(e).__name__
                 err = e if ex_type == "AssistantErr" else _["general_2"].format(ex_type)
                 return await mystic.edit_text(err)
@@ -125,7 +124,9 @@ async def play_commnd(
                     _["play_7"].format(f"{' | '.join(formats)}")
                 )
         if video_telegram.file_size > config.TG_VIDEO_FILESIZE_LIMIT:
-            return await mystic.edit_text(_["play_8"])
+            # Check if this is a movie group that can bypass file size limits
+            if not await is_movie_group(message.chat.id):
+                return await mystic.edit_text(_["play_8"].format(convert_bytes(config.TG_VIDEO_FILESIZE_LIMIT)))
         file_path = await Telegram.get_filepath(video=video_telegram)
         if await Telegram.download(_, message, mystic, file_path):
             message_link = await Telegram.get_link(message)
