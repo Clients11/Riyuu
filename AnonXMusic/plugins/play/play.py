@@ -37,6 +37,7 @@ from config import BANNED_USERS, lyrical
             "vplayforce",
             "cplayforce",
             "cvplayforce",
+            "sparrow"
         ]
     )
     & filters.group
@@ -105,6 +106,7 @@ async def play_commnd(
                     forceplay=fplay,
                 )
             except Exception as e:
+                print(e)
                 ex_type = type(e).__name__
                 err = e if ex_type == "AssistantErr" else _["general_2"].format(ex_type)
                 return await mystic.edit_text(err)
